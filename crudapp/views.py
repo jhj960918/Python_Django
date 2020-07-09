@@ -1,14 +1,21 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.core.paginator import Paginator
 from .models import Blog
 from .forms import BlogUpdate
+
 
 
 # Create your views here.
 
 def home(request):
     blogs = Blog.objects.order_by('-id')
-    return render(request, 'home.html', {'blogs': blogs})
+    blog_list = Blog.objects.all().order_by('-id')#paginator란 변수에 Pagenator를 이요해서 3개씩자른 글 목록을 넣어준다.
+    paginator = Paginator(blog_list,3)
+    page = request.GET.get('page')
+    posts = paginator.get_page(page)#페이지를 출력하기위해 posts에 넣어줌
+
+    return render(request,'home.html', {'blogs':blogs,'posts':posts} )
 
 def detail(request, blog_id):
     blog_detail = get_object_or_404(Blog, pk=blog_id)

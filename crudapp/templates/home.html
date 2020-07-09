@@ -2,8 +2,7 @@
 
 {% block content %}
 
-
-      {% for blog in blogs.all %}
+      {% for blog in posts %}
       <div class="container"> 
       <div class="card">
         <div class="card-body">
@@ -15,5 +14,19 @@
       </div>
       <br>
       {% endfor %}
+
+      {%if posts.has_previous%}
+      <a href="?page=1">첫 번째 페이지</a>
+      <a href="?page={{posts.previous_page_number}}">이 전 페이지</a>
+      {%endif%}
+
+      <span>{{posts.number}}</span>
+      <span>of</span>
+      <span>{{posts.paginator.num_pages}}</span>
+
+      {%if posts.has_next%}
+      <a href="?page={{posts.next_page_number}}">다음 페이지</a>
+      <a href="?page={{posts.paginator.num_pages}}">마지막 페이지</a>
+      {%endif%}
 
 {% endblock %}
