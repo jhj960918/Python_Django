@@ -10,7 +10,7 @@ from .forms import BlogUpdate
 
 def home(request):
     blogs = Blog.objects.order_by('-id')
-    blog_list = Blog.objects.all().order_by('-id')#paginator란 변수에 Pagenator를 이요해서 3개씩자른 글 목록을 넣어준다.
+    blog_list = Blog.objects.all().order_by('-id')#paginator란 변수에 Pagenator를 이요해서 3개씩자른 글 목록을 넣어줌
     paginator = Paginator(blog_list,3)
     page = request.GET.get('page')
     posts = paginator.get_page(page)#페이지를 출력하기위해 posts에 넣어줌
@@ -68,3 +68,14 @@ def new(request):
             word_dictionary[word] = 1
 
     return render(request, 'new.html', {'fulltext': full_text, 'total': len(word_list), 'dictionary': word_dictionary.items()} )
+
+def search(request):
+    blogs = Blog.objects.all().order_by('-id')#blogs에 모든 객체를 역순으로 담는다.
+
+    q=request.POST.get('q',"")#Post로 넘어온 값을 q에 담는다.
+
+    if q:
+        blogs = blogs.filter(title__icontains=q)#blogs에 filter를 하여 icontains을 이용해서 q와 비교
+        return render(request,'search.html',{'blogs' : blogs, 'q' :q})#같다면 search.html에 blogs와 q를 넘겨준다.
+    else:
+        return render(request,'search.html')
