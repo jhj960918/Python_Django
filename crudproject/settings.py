@@ -119,3 +119,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS=[#static 파일 들이 있는 곳을 알려 줍니다.
+    os.path.join(BASE_DIR,'crudapp','static')
+]
+STATIC_ROOT=os.path.join(BASE_DIR,'static')#여러 앱들에 흩어져있는 static 파일들을 BASE_DIR아래 staitc 폴더에 모아줍니다.
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+MEDIA_URL = '/media/'
