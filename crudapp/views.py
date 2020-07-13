@@ -4,8 +4,6 @@ from django.core.paginator import Paginator
 from .models import Blog
 from .forms import BlogUpdate
 
-
-
 # Create your views here.
 
 def home(request):
@@ -14,18 +12,28 @@ def home(request):
     paginator = Paginator(blog_list,3)
     page = request.GET.get('page')
     posts = paginator.get_page(page)#페이지를 출력하기위해 posts에 넣어줌
-
     return render(request,'home.html', {'blogs':blogs,'posts':posts} )
 
 def detail(request, blog_id):
     blog_detail = get_object_or_404(Blog, pk=blog_id)
     return render(request, 'detail.html', {'blog': blog_detail})
 
+# def create(request):
+#     return render(request, 'create.html')
+
 def create(request):
-    return render(request, 'create.html')
+   if request.user.is_authenticated: 
+       return render(request, 'create.html')#로그인 한 상태라면 new포스트 html로 보내기.
+   else:
+       blogs = Blog.objects
+       return render(request, 'home.html', {'blogs': blogs, 'error': 'You have to login to make newpost'})#회원정보가 존재하지 않는다면, 에러인자와 함께 home 템플릿으로 돌아가기.  
+
+   return render(request, 'create.html')
+    
 
 def postcreate(request):
     blog = Blog()
+    blog.author = request.user
     blog.title = request.POST['title']
     blog.body = request.POST['body']
     blog.images = request.FILES['images']#새로 추가된 FILES를 이용해 images를 가져온다
@@ -80,3 +88,4 @@ def search(request):
         return render(request,'search.html',{'blogs' : blogs, 'q' :q})#같다면 search.html에 blogs와 q를 넘겨준다.
     else:
         return render(request,'search.html')
+
